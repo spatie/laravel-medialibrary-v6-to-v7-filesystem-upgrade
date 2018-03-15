@@ -5,14 +5,14 @@ namespace Spatie\UpgradeTool;
 use Illuminate\Support\ServiceProvider;
 use Spatie\UpgradeTool\Commands\UpgradeMediaCommand;
 
-class SkeletonServiceProvider extends ServiceProvider
+class UpgradeToolServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        $this->app->bind('command.upgrade-tool', UpgradeMediaCommand::class);
+        $this->app->bind('command.upgrade-media', UpgradeMediaCommand::class);
 
         $this->commands([
-            'command.upgrade-tool',
+            'command.upgrade-media',
         ]);
     }
 }

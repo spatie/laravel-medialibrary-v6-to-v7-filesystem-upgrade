@@ -1,13 +1,41 @@
-# Very short description of the package
+# Renames media as required to use with spatie/laravel-medialibrary version 7 
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/medialibrary-v7-upgrade-tool.svg?style=flat-square)](https://packagist.org/packages/spatie/medialibrary-v7-upgrade-tool)
 [![Build Status](https://img.shields.io/travis/spatie/medialibrary-v7-upgrade-tool/master.svg?style=flat-square)](https://travis-ci.org/spatie/medialibrary-v7-upgrade-tool)
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/medialibrary-v7-upgrade-tool.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/medialibrary-v7-upgrade-tool)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/medialibrary-v7-upgrade-tool.svg?style=flat-square)](https://packagist.org/packages/spatie/medialibrary-v7-upgrade-tool)
 
-**Note:** Replace ```Thomas Verhelst``` ```TVke``` ```tvke91@gmail.com``` ```medialibrary-v7-upgrade-tool``` ```This tool will add the original name to the comvertions like specified in the upgrade guide of the medialibrary version 7``` with their correct values in [README.md](README.md), [CHANGELOG.md](CHANGELOG.md), [CONTRIBUTING.md](CONTRIBUTING.md), [LICENSE.md](LICENSE.md) and [composer.json](composer.json) files, then delete this line.
+In version 7 of the [spatie/laravel-medialibrary](https://github.com/spatie/laravel-medialibrary) all media created with version 6 needs to be renamed with the original name in front of it.
+This package adds a command `php artisan upgrade-media {media-location}` that renames your current media in the specified folder.
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what PSRs you support to avoid any confusion with users and contributors.
+It will analyse the folder structure and rename where needed.
+For example from:
+
+```bash
+media 
+├── 1
+│   ├── conversions
+│   │   └── thumb.png
+│   └── red-square.png
+└── 2
+    ├── conversions
+    │   └── thumb.png
+    └── green-square.png
+```
+
+to:
+
+```bash
+media 
+├── 1
+│   ├── conversions
+│   │   └── red-square-thumb.png
+│   └── red-square.png
+└── 2
+    ├── conversions
+    │   └── green-square-thumb.png
+    └── green-square.png
+```
 
 ## Installation
 
@@ -19,8 +47,22 @@ composer require spatie/medialibrary-v7-upgrade-tool
 
 ## Usage
 
+To convert your media folder user this command:
+
 ``` bash
-php artisan medialibrary:upgrade-media
+php artisan upgrade-media {media-location}
+```
+
+To get a list of the files that would be changed add the `--dry-run` flag:
+
+``` bash
+php artisan upgrade-media {media-location} --dry-run
+```
+
+To convert your media folder in production add the `--force` flag:
+
+``` bash
+php artisan upgrade-media {media-location} --force
 ```
 
 ### Testing

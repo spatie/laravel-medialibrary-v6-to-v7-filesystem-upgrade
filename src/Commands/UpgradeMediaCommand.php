@@ -11,7 +11,7 @@ class UpgradeMediaCommand extends Command
 {
     use ConfirmableTrait;
 
-    protected $signature = 'upgrade-tool 
+    protected $signature = 'upgrade-media 
     {location : Relative path to the location of your media}
     {--dry-run : List files that will be renamed without renaming them}
     {--force : Force the operation to run when in production}';
@@ -20,9 +20,6 @@ class UpgradeMediaCommand extends Command
 
     /** @var bool */
     protected $isDryRun = false;
-
-    /** @var array */
-    protected $errorMessages;
 
     public function __construct()
     {
@@ -43,32 +40,19 @@ class UpgradeMediaCommand extends Command
 
         $progressBar = $this->output->createProgressBar($mediaFilesToChange->count());
 
-        $this->errorMessages = [];
-
         $mediaFilesToChange->each(function ($file) use ($progressBar) {
-            try {
-                if ($this->isDryRun) {
-                    $this->comment("The file `{$file['current']}` would become `{$file['replacement']}`");
-                }
-                if (! $this->isDryRun) {
-                    rename($file['current'], $file['replacement']);
-                }
-            } catch (Exception $exception) {
-                $this->errorMessages[$file] = $exception->getMessage();
+            if ($this->isDryRun) {
+                $this->comment("The file `{$file['current']}` would become `{$file['replacement']}`");
+            }
+
+            if (! $this->isDryRun) {
+                rename($file['current'], $file['replacement']);
             }
 
             $progressBar->advance();
         });
 
         $progressBar->finish();
-
-        if (count($this->errorMessages)) {
-            $this->warn('All done, but with some error messages:');
-
-            foreach ($this->errorMessages as $fileName => $message) {
-                $this->warn("Media file ({$fileName}): `{$message}`");
-            }
-        }
 
         $this->info('All done!');
     }
@@ -137,9 +121,11 @@ class UpgradeMediaCommand extends Command
         if (! file_exists($filePath)) {
             return null;
         }
+
         if (! is_file($filePath)) {
             return null;
         }
+
         $path = Collection::make(explode('/', $filePath));
 
         $path->pop();

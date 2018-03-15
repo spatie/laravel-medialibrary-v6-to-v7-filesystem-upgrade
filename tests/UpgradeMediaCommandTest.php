@@ -12,7 +12,7 @@ class UpgradeMediaCommandTest extends TestCase
     {
         $this->resetTestFolderStructure();
 
-        Artisan::call('upgrade-tool', ['location' => 'tests/Media', '--dry-run' => 'default']);
+        Artisan::call('upgrade-media', ['location' => 'tests/Media', '--dry-run' => 'default']);
 
         $this->assertFileExists('tests/Media/1/conversions/thumb.png');
         $this->assertFileNotExists('tests/Media/1/conversions/white-cube-thumb.png');
@@ -28,7 +28,7 @@ class UpgradeMediaCommandTest extends TestCase
     {
         $this->resetTestFolderStructure();
 
-        Artisan::call('upgrade-tool', ['location' => 'tests/Media']);
+        Artisan::call('upgrade-media', ['location' => 'tests/Media']);
 
         $this->assertFileExists('tests/Media/1/conversions/white-cube-thumb.png');
         $this->assertFileNotExists('tests/Media/1/conversions/thumb.png');
@@ -39,7 +39,7 @@ class UpgradeMediaCommandTest extends TestCase
     {
         $this->resetTestFolderStructure();
 
-        Artisan::call('upgrade-tool', ['location' => 'tests/Media']);
+        Artisan::call('upgrade-media', ['location' => 'tests/Media']);
 
         $this->assertFileExists('tests/Media/already-version-7/conversions/white-cube-thumb.png');
         $this->assertFileNotExists('tests/Media/already-version-7/conversions/white-cube-white-cube-thumb.png');
@@ -50,7 +50,7 @@ class UpgradeMediaCommandTest extends TestCase
     {
         $this->resetTestFolderStructure();
 
-        Artisan::call('upgrade-tool', ['location' => 'tests/Media']);
+        Artisan::call('upgrade-media', ['location' => 'tests/Media']);
 
         $this->assertFileExists('tests/Media/not-default-path/c/white-cube-thumb.png');
         $this->assertFileNotExists('tests/Media/not-default-path/c/thumb.png');

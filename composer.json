@@ -46,7 +46,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\UpgradeTool\\SkeletonServiceProvider"
+                "Spatie\\UpgradeTool\\UpgradeToolServiceProvider"
             ]
         }
     }

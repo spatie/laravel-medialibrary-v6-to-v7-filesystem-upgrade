@@ -9,7 +9,7 @@ class TestCase extends BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
-            \Spatie\UpgradeTool\SkeletonServiceProvider::class,
+            \Spatie\UpgradeTool\UpgradeToolServiceProvider::class,
         ];
     }
 }
