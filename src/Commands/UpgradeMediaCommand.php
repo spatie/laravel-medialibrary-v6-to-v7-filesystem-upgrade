@@ -47,7 +47,12 @@ class UpgradeMediaCommand extends Command
 
         $mediaFilesToChange->each(function ($file) use ($progressBar) {
             try {
-                var_dump($file);
+                if ($this->isDryRun) {
+                    $this->comment("The file `{$file['current']}` would become `{$file['replacement']}`");
+                }
+                if (! $this->isDryRun) {
+                    rename($file['current'], $file['replacement']);
+                }
             } catch (Exception $exception) {
                 $this->errorMessages[$file] = $exception->getMessage();
             }
@@ -72,7 +77,19 @@ class UpgradeMediaCommand extends Command
     {
         $fileTree = $this->createFileTree($pathToMedia);
 
-        return $fileTree;
+        return $fileTree
+            ->flatten()
+            ->filter(function ($file) {
+                return $file;
+            })
+            ->map(function ($file) {
+                $replacementParts = explode(' => ', $file);
+
+                return [
+                    'current' => $replacementParts[0],
+                    'replacement' => $replacementParts[1],
+                ];
+            });
     }
 
     protected function createFileTree(string $directory): ?Collection
@@ -96,7 +113,53 @@ class UpgradeMediaCommand extends Command
                     return $this->createFileTree($fullPath);
                 }
 
-                return $fullPath;
+                $original = $this->getOriginal($fullPath);
+
+                if ($original) {
+                    $name = collect(explode('.', $original));
+
+                    $name->pop();
+
+                    $name = $name->implode('.');
+                    if (strpos($content, $name) === false) {
+                        return [
+                            "{$fullPath} => {$directory}/{$name}-{$content}",
+                        ];
+                    }
+                }
+
+                return null;
             });
+    }
+
+    protected function getOriginal(string $filePath): ?string
+    {
+        if (! file_exists($filePath)) {
+            return null;
+        }
+        if (! is_file($filePath)) {
+            return null;
+        }
+        $path = Collection::make(explode('/', $filePath));
+
+        $path->pop();
+
+        $path->pop();
+
+        $oneLevelHigher = $path->implode('/');
+
+        $original = Collection::make(scandir($oneLevelHigher))
+            ->reject(function ($file) {
+                return $file === '.' || $file === '..';
+            })
+            ->filter(function ($file) use ($oneLevelHigher) {
+                return (is_file("{$oneLevelHigher}/{$file}"));
+            });
+
+        if ($original->count() > 0) {
+            return $original->first();
+        }
+
+        return null;
     }
 }

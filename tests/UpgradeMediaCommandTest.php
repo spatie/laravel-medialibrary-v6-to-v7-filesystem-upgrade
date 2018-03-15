@@ -6,9 +6,21 @@ use Illuminate\Support\Facades\Artisan;
 
 class UpgradeMediaCommandTest extends TestCase
 {
-    protected function setUp()
+
+    /** @test */
+    public function it_can_do_a_dry_run()
     {
-        parent::setUp();
+        $this->resetTestFolderStructure();
+
+        Artisan::call('upgrade-tool', ['location' => 'tests/Media', '--dry-run' => 'default']);
+
+        $this->assertFileExists('tests/Media/1/conversions/thumb.png');
+        $this->assertFileNotExists('tests/Media/1/conversions/white-cube-thumb.png');
+
+        $this->assertFileExists('tests/Media/already-version-7/conversions/white-cube-thumb.png');
+
+        $this->assertFileExists('tests/Media/not-default-path/c/thumb.png');
+        $this->assertFileNotExists('tests/Media/not-default-path/c/white-cube-thumb.png');
     }
 
     /** @test */
