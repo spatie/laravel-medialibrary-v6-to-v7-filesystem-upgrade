@@ -6,7 +6,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
 
 In version 7 of the [spatie/laravel-medialibrary](https://github.com/spatie/laravel-medialibrary) all conversions created with version 6 needs to be renamed with the original name in front of it.
-This package adds a command `php artisan upgrade-media {media-location}` that renames your current media in the specified folder.
+This package adds a command `php artisan upgrade-media` that renames your current media.
 
 It will analyse the folder structure and rename where needed.
 For example from:
@@ -47,22 +47,36 @@ composer require spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade
 
 ## Usage
 
-To convert your media folder user this command:
+The command can handle any custom path and if you already converted some files by hand it will leave them.
+
+To convert your media folder use this command:
 
 ``` bash
-php artisan upgrade-media {media-location}
+php artisan upgrade-media
+```
+
+To convert a specific disk use this command:
+
+``` bash
+php artisan upgrade-media disk
+```
+
+To convert a specific location disk use this command:
+
+``` bash
+php artisan upgrade-media disk '/media'
 ```
 
 To get a list of the files that would be changed add the `--dry-run` flag:
 
 ``` bash
-php artisan upgrade-media {media-location} --dry-run
+php artisan upgrade-media --dry-run
 ```
 
-To convert your media folder in production add the `--force` flag:
+To convert your media in production add the `--force` flag:
 
 ``` bash
-php artisan upgrade-media {media-location} --force
+php artisan upgrade-media --force
 ```
 
 ### Testing

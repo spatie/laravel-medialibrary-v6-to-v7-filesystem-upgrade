@@ -5,7 +5,6 @@ namespace Spatie\UpgradeTool\Tests;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
-use Spatie\MediaLibrary\Tests\S3TestPathGenerator;
 
 class UpgradeRemoteMediaTest extends TestCase
 {
@@ -21,16 +20,11 @@ class UpgradeRemoteMediaTest extends TestCase
         }
 
         $this->s3BaseDirectory = self::getS3BaseTestDirectory();
-
-        $this->app['config']->set('medialibrary.custom_path_generator_class', S3TestPathGenerator::class);
-
     }
 
     public function tearDown()
     {
         $this->cleanUpS3();
-
-        $this->app['config']->set('medialibrary.custom_path_generator_class', null);
 
         parent::tearDown();
     }
