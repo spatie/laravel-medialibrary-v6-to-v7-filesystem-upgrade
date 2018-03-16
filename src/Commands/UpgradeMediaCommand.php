@@ -95,6 +95,10 @@ class UpgradeMediaCommand extends Command
 
         $path->pop();
 
+        if($path->count() < 1){
+            return null;
+        }
+
         $oneLevelHigher = $path->implode('/');
 
         $original = Storage::files($oneLevelHigher);

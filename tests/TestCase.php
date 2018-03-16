@@ -34,6 +34,22 @@ class TestCase extends BaseTestCase
             'root' => 'tests/Media',
         ]);
 
+        $s3Configuration = [
+            'driver' => 's3',
+            'key' => getenv('S3_ACCESS_KEY_ID'),
+            'secret' => getenv('S3_SECRET_ACCESS_KEY'),
+            'region' => getenv('S3_BUCKET_REGION'),
+            'bucket' => getenv('S3_BUCKET_NAME'),
+        ];
+
+        $app['config']->set('filesystems.disks.s3_disk', $s3Configuration);
+        $app['config']->set(
+            'medialibrary.s3.domain',
+            'https://' . $s3Configuration['bucket'] . '.s3.amazonaws.com'
+        );
+
+        $app['config']->set('app.key', '6rE9Nz59bGRbeMATftriyQjrpF7DcOQm');
+
         $app->bind('path.public', function () {
             return 'tests/Media';
         });

@@ -3,6 +3,7 @@
 namespace Spatie\UpgradeTool\Tests;
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Storage;
 
 class UpgradeMediaCommandTest extends TestCase
 {
@@ -58,62 +59,20 @@ class UpgradeMediaCommandTest extends TestCase
 
     protected function resetTestFolderStructure()
     {
-        $this->removeDir('tests/Media');
+        collect(Storage::disk('local')->allDirectories('/'))->each(function ($directory) {
+            Storage::disk('local')->deleteDirectory($directory);
+        });
 
-        mkdir('tests/Media');
+        Storage::makeDirectory('1/conversions');
+        Storage::makeDirectory('already-version-7/conversions');
+        Storage::makeDirectory('not-default-path/c');
 
-        mkdir('tests/Media/1');
-        mkdir('tests/Media/already-version-7');
-        mkdir('tests/Media/not-default-path');
+        Storage::copy('test-image.png', '1/white-cube.png');
+        Storage::copy('test-image.png', 'already-version-7/white-cube.png');
+        Storage::copy('test-image.png', 'not-default-path/white-cube.png');
 
-        mkdir('tests/Media/1/conversions');
-        mkdir('tests/Media/already-version-7/conversions');
-        mkdir('tests/Media/not-default-path/c');
-
-        copy('tests/test-image.png', 'tests/Media/1/white-cube.png');
-        copy('tests/test-image.png', 'tests/Media/already-version-7/white-cube.png');
-        copy('tests/test-image.png', 'tests/Media/not-default-path/white-cube.png');
-
-        copy('tests/test-image.png', 'tests/Media/1/conversions/thumb.png');
-        copy('tests/test-image.png', 'tests/Media/already-version-7/conversions/white-cube-thumb.png');
-        copy('tests/test-image.png', 'tests/Media/not-default-path/c/thumb.png');
-    }
-
-    protected function removeDir($directory)
-    {
-        if (! file_exists($directory)) {
-            return;
-        }
-
-        $this->removeFilesFrom('tests/Media/1/conversions');
-        $this->removeFilesFrom('tests/Media/already-version-7/conversions');
-        $this->removeFilesFrom('tests/Media/not-default-path/c');
-
-        rmdir('tests/Media/1/conversions');
-        rmdir('tests/Media/already-version-7/conversions');
-        rmdir('tests/Media/not-default-path/c');
-
-        $this->removeFilesFrom('tests/Media/1');
-        $this->removeFilesFrom('tests/Media/already-version-7');
-        $this->removeFilesFrom('tests/Media/not-default-path');
-
-        rmdir('tests/Media/1');
-        rmdir('tests/Media/already-version-7');
-        rmdir('tests/Media/not-default-path');
-
-        rmdir($directory);
-    }
-
-    protected function removeFilesFrom($directory)
-    {
-        collect(scandir($directory))
-            ->reject(function ($file) {
-                return $file === '.' || $file === '..';
-            })
-            ->each(function ($file) use ($directory) {
-                if (is_file("{$directory}/{$file}")) {
-                    unlink("{$directory}/{$file}");
-                }
-            });
+        Storage::copy('test-image.png', '1/conversions/thumb.png');
+        Storage::copy('test-image.png', 'already-version-7/conversions/white-cube-thumb.png');
+        Storage::copy('test-image.png', 'not-default-path/c/thumb.png');
     }
 }
