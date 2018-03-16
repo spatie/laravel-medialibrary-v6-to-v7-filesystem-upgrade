@@ -1,11 +1,11 @@
 {
-    "name": "spatie/medialibrary-v7-upgrade-tool",
+    "name": "spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade",
     "description": "This tool will add the original name to the comvertions like specified in the upgrade guide of the medialibrary version 7",
     "keywords": [
         "spatie",
-        "medialibrary-v7-upgrade-tool"
+        "laravel-medialibrary-v6-to-v7-filesystem-upgrade"
     ],
-    "homepage": "https://github.com/spatie/medialibrary-v7-upgrade-tool",
+    "homepage": "https://github.com/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade",
     "license": "MIT",
     "authors": [
         {

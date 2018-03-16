@@ -1,9 +1,9 @@
 # Renames media as required to use with spatie/laravel-medialibrary version 7 
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/medialibrary-v7-upgrade-tool.svg?style=flat-square)](https://packagist.org/packages/spatie/medialibrary-v7-upgrade-tool)
-[![Build Status](https://img.shields.io/travis/spatie/medialibrary-v7-upgrade-tool/master.svg?style=flat-square)](https://travis-ci.org/spatie/medialibrary-v7-upgrade-tool)
-[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/medialibrary-v7-upgrade-tool.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/medialibrary-v7-upgrade-tool)
-[![Total Downloads](https://img.shields.io/packagist/dt/spatie/medialibrary-v7-upgrade-tool.svg?style=flat-square)](https://packagist.org/packages/spatie/medialibrary-v7-upgrade-tool)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
+[![Build Status](https://img.shields.io/travis/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
+[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
+[![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
 
 In version 7 of the [spatie/laravel-medialibrary](https://github.com/spatie/laravel-medialibrary) all media created with version 6 needs to be renamed with the original name in front of it.
 This package adds a command `php artisan upgrade-media {media-location}` that renames your current media in the specified folder.
@@ -42,7 +42,7 @@ media 
 You can install the package via composer:
 
 ```bash
-composer require spatie/medialibrary-v7-upgrade-tool
+composer require spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade
 ```
 
 ## Usage
