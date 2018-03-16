@@ -2,9 +2,9 @@
 
 namespace Spatie\UpgradeTool\Commands;
 
-use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Console\ConfirmableTrait;
+use Illuminate\Support\Facades\Storage;
 use Tightenco\Collect\Support\Collection;
 
 class UpgradeMediaCommand extends Command
@@ -12,7 +12,8 @@ class UpgradeMediaCommand extends Command
     use ConfirmableTrait;
 
     protected $signature = 'upgrade-media 
-    {location : Relative path to the location of your media}
+    {disk? : Relative path to the location of your media}
+    {location? : Relative path to the location of your media}
     {--dry-run : List files that will be renamed without renaming them}
     {--force : Force the operation to run when in production}';
 
@@ -21,11 +22,12 @@ class UpgradeMediaCommand extends Command
     /** @var bool */
     protected $isDryRun = false;
 
+    /** @var string */
+    protected $disk;
+
     public function __construct()
     {
         parent::__construct();
-
-        $this->fileTree = collect();
     }
 
     public function handle()
@@ -36,7 +38,11 @@ class UpgradeMediaCommand extends Command
 
         $this->isDryRun = $this->option('dry-run');
 
-        $mediaFilesToChange = $this->getMediaToBeRenamed($this->argument('location'));
+        $this->disk = $this->argument('disk') ?? config('medialibrary.default_filesystem');
+
+        $location = $this->argument('location') ?? '/';
+
+        $mediaFilesToChange = $this->getMediaToBeRenamed($location);
 
         $progressBar = $this->output->createProgressBar($mediaFilesToChange->count());
 
@@ -46,7 +52,7 @@ class UpgradeMediaCommand extends Command
             }
 
             if (! $this->isDryRun) {
-                rename($file['current'], $file['replacement']);
+                Storage::disk($this->disk)->move($file['current'], $file['replacement']);
             }
 
             $progressBar->advance();
@@ -57,93 +63,44 @@ class UpgradeMediaCommand extends Command
         $this->info('All done!');
     }
 
-    public function getMediaToBeRenamed(string $pathToMedia): Collection
+    public function getMediaToBeRenamed($location): Collection
     {
-        $fileTree = $this->createFileTree($pathToMedia);
-
-        return $fileTree
-            ->flatten()
-            ->filter(function ($file) {
-                return $file;
-            })
+        return Collection::make(Storage::disk($this->disk)->allFiles($location))
             ->map(function ($file) {
-                $replacementParts = explode(' => ', $file);
+                if ($original = $this->getOriginal($file)) {
+                    $currentPath = pathinfo($file, PATHINFO_DIRNAME);
+                    $currentFile = pathinfo($file, PATHINFO_BASENAME);
+                    $originalName = pathinfo($original, PATHINFO_FILENAME);
 
-                return [
-                    'current' => $replacementParts[0],
-                    'replacement' => $replacementParts[1],
-                ];
-            });
-    }
-
-    protected function createFileTree(string $directory): ?Collection
-    {
-        if (! is_dir($directory)) {
-            $this->error('The given string is not a directory');
-
-            return null;
-        }
-
-        $directoryContent = Collection::make(scandir($directory));
-
-        return $directoryContent
-            ->reject(function ($content) {
-                return $content === '.' || $content === '..';
-            })
-            ->map(function ($content) use ($directory) {
-                $fullPath = "{$directory}/{$content}";
-
-                if (is_dir($fullPath)) {
-                    return $this->createFileTree($fullPath);
-                }
-
-                $original = $this->getOriginal($fullPath);
-
-                if ($original) {
-                    $name = collect(explode('.', $original));
-
-                    $name->pop();
-
-                    $name = $name->implode('.');
-                    if (strpos($content, $name) === false) {
+                    if (strpos($currentFile, $originalName) === false) {
                         return [
-                            "{$fullPath} => {$directory}/{$name}-{$content}",
+                            'current' => $file,
+                            'replacement' => "{$currentPath}/{$originalName}-{$currentFile}",
                         ];
                     }
                 }
 
                 return null;
+            })
+            ->filter(function ($file) {
+                return $file;
             });
     }
 
     protected function getOriginal(string $filePath): ?string
     {
-        if (! file_exists($filePath)) {
-            return null;
-        }
+        $path = pathinfo($filePath, PATHINFO_DIRNAME);
 
-        if (! is_file($filePath)) {
-            return null;
-        }
-
-        $path = Collection::make(explode('/', $filePath));
-
-        $path->pop();
+        $path = Collection::make(explode('/', $path));
 
         $path->pop();
 
         $oneLevelHigher = $path->implode('/');
 
-        $original = Collection::make(scandir($oneLevelHigher))
-            ->reject(function ($file) {
-                return $file === '.' || $file === '..';
-            })
-            ->filter(function ($file) use ($oneLevelHigher) {
-                return (is_file("{$oneLevelHigher}/{$file}"));
-            });
+        $original = Storage::files($oneLevelHigher);
 
-        if ($original->count() > 0) {
-            return $original->first();
+        if (count($original) > 0) {
+            return $original[0];
         }
 
         return null;

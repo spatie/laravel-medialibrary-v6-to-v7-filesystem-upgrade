@@ -5,7 +5,7 @@
 [![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
 
-In version 7 of the [spatie/laravel-medialibrary](https://github.com/spatie/laravel-medialibrary) all media created with version 6 needs to be renamed with the original name in front of it.
+In version 7 of the [spatie/laravel-medialibrary](https://github.com/spatie/laravel-medialibrary) all conversions created with version 6 needs to be renamed with the original name in front of it.
 This package adds a command `php artisan upgrade-media {media-location}` that renames your current media in the specified folder.
 
 It will analyse the folder structure and rename where needed.
