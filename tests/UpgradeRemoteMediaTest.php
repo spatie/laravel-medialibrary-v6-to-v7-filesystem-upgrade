@@ -73,7 +73,7 @@ class UpgradeRemoteMediaTest extends TestCase
     {
         $this->cleanUpS3();
 
-        Storage::putFileAs('test-image', new File('tests/Media/test-image.png'), 'test-image.png');
+        Storage::putFileAs('test-image', new File('tests/test-directory/test-image.png'), 'test-image.png');
 
         Storage::makeDirectory('1/conversions');
         Storage::makeDirectory('already-version-7/conversions');

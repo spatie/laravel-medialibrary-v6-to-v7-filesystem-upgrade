@@ -31,7 +31,7 @@ class TestCase extends BaseTestCase
     {
         $app['config']->set('filesystems.disks.local', [
             'driver' => 'local',
-            'root' => 'tests/Media',
+            'root' => 'tests/test-directory',
         ]);
 
         $s3Configuration = [
@@ -51,7 +51,7 @@ class TestCase extends BaseTestCase
         $app['config']->set('app.key', '6rE9Nz59bGRbeMATftriyQjrpF7DcOQm');
 
         $app->bind('path.public', function () {
-            return 'tests/Media';
+            return 'tests/test-directory';
         });
     }
 }
