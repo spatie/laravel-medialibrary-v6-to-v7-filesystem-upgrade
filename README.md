@@ -21,7 +21,7 @@ media 
 └── 2
     ├── conversions
     │   └── thumb.png
-    └── green-square.png
+    └── green-circle.png
 ```
 
 to:
@@ -35,7 +35,7 @@ media 
 └── 2
     ├── conversions
     │   └── green-square-thumb.png
-    └── green-square.png
+    └── green-circle.png
 ```
 
 ## Installation
