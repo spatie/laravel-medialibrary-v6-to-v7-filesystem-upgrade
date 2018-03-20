@@ -1,19 +1,21 @@
 <?php
 
-namespace Spatie\UpgradeTool\Tests;
+namespace Tests\Feature;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
+use Tests\TestCase;
 
 class UpgradeMediaCommandTest extends TestCase
 {
-
     /** @test */
     public function it_can_do_a_dry_run()
     {
         $this->resetTestFolderStructure();
 
         Artisan::call('upgrade-media', ['disk' => 'local', '--dry-run' => 'default']);
+
+        $output = Artisan::output();
 
         $this->assertFileExists('tests/test-directory/1/conversions/thumb.png');
         $this->assertFileNotExists('tests/test-directory/1/conversions/white-cube-thumb.png');
@@ -22,6 +24,9 @@ class UpgradeMediaCommandTest extends TestCase
 
         $this->assertFileExists('tests/test-directory/not-default-path/c/thumb.png');
         $this->assertFileNotExists('tests/test-directory/not-default-path/c/white-cube-thumb.png');
+
+        $this->assertContains('The file `1/conversions/thumb.png` would become `1/conversions/white-cube-thumb.png`', $output);
+        $this->assertContains('The file `not-default-path/c/thumb.png` would become `not-default-path/c/white-cube-thumb.png`', $output);
     }
 
     /** @test */

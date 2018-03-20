@@ -1,122 +1,38 @@
-# Renames media as required to use with spatie/laravel-medialibrary version 7 
+<p align="center">
+    <img title="Laravel Zero" height="100" src="https://raw.githubusercontent.com/laravel-zero/docs/master/images/logo/laravel-zero-readme.png" />
+</p>
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
-[![Build Status](https://img.shields.io/travis/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
-[![Quality Score](https://img.shields.io/scrutinizer/g/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade.svg?style=flat-square)](https://scrutinizer-ci.com/g/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
-[![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
+<p align="center">
+  <a href="https://travis-ci.org/laravel-zero/framework"><img src="https://img.shields.io/travis/laravel-zero/framework/stable.svg" alt="Build Status"></img></a>
+  <a href="https://scrutinizer-ci.com/g/laravel-zero/framework"><img src="https://img.shields.io/scrutinizer/g/laravel-zero/framework.svg" alt="Quality Score"></img></a>
+  <a href="https://scrutinizer-ci.com/g/laravel-zero/framework"><img src="https://img.shields.io/scrutinizer/coverage/g/laravel-zero/framework.svg" alt="Coverage"></img></a>
+  <a href="https://packagist.org/packages/laravel-zero/framework"><img src="https://poser.pugx.org/laravel-zero/framework/d/total.svg" alt="Total Downloads"></a>
+  <a href="https://packagist.org/packages/laravel-zero/framework"><img src="https://poser.pugx.org/laravel-zero/framework/v/stable.svg" alt="Latest Stable Version"></a>
+  <a href="https://packagist.org/packages/laravel-zero/framework"><img src="https://poser.pugx.org/laravel-zero/framework/license.svg" alt="License"></a>
+</p>
 
-In version 7 of the [spatie/laravel-medialibrary](https://github.com/spatie/laravel-medialibrary) all conversions created with version 6 needs to be renamed with the original name in front of it.
-This package adds a command `php artisan upgrade-media` that renames your current media.
+<h4> <center>This is a <bold>community project</bold> and not an official Laravel one </center></h4>
 
-It will analyse the folder structure and rename where needed.
-For example from:
+Laravel Zero was created by, and is maintained by [Nuno Maduro](https://github.com/nunomaduro), and is a micro-framework that provides an elegant starting point for your console application. It is an **unofficial** and customized version of Laravel optimized for building command-line applications.
 
-```bash
-media 
-├── 1
-│   ├── conversions
-│   │   └── thumb.png
-│   └── red-square.png
-└── 2
-    ├── conversions
-    │   └── thumb.png
-    └── green-square.png
-```
+- Built on top of the [Laravel](https://laravel.com) components.
+- Optional installation of Laravel [Eloquent](http://laravel-zero.com/#/?id=database), Laravel [Logging](http://laravel-zero.com/#/?id=log) and many others.
+- Supports interactive [menus](http://laravel-zero.com/#/?id=interactive-menus) and [desktop notifications](http://laravel-zero.com/#/?id=desktop-notifications) on Linux, Windows & MacOS.
+- Ships with a [Scheduler](http://laravel-zero.com/#/?id=scheduler) and a [Standalone Compiler](http://laravel-zero.com/#/?id=build-a-standalone-application).
+- Integration with [Collision](https://github.com/nunomaduro/collision) - Beautiful error reporting
 
-to:
+------
 
-```bash
-media 
-├── 1
-│   ├── conversions
-│   │   └── red-square-thumb.png
-│   └── red-square.png
-└── 2
-    ├── conversions
-    │   └── green-square-thumb.png
-    └── green-square.png
-```
+## Documentation
 
-## Installation
+For full documentation, visit [laravel-zero.com](http://laravel-zero.com/).
 
-You can install the package via composer:
+## Support the development
+**Do you like this project? Support it by donating**
 
-```bash
-composer require spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade
-```
-
-## Usage
-
-The command can handle any custom path and if you already converted some files by hand it will leave them.
-
-To convert your media folder use this command:
-
-``` bash
-php artisan upgrade-media
-```
-
-To convert a specific disk use this command:
-
-``` bash
-php artisan upgrade-media disk
-```
-
-To convert a specific location disk use this command:
-
-``` bash
-php artisan upgrade-media disk '/media'
-```
-
-To get a list of the files that would be changed add the `--dry-run` flag:
-
-``` bash
-php artisan upgrade-media --dry-run
-```
-
-To convert your media in production add the `--force` flag:
-
-``` bash
-php artisan upgrade-media --force
-```
-
-### Testing
-
-``` bash
-composer test
-```
-
-### Changelog
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
-
-### Security
-
-If you discover any security related issues, please email freek@spatie.be instead of using the issue tracker.
-
-## Postcardware
-
-You're free to use this package, but if it makes it to your production environment we highly appreciate you sending us a postcard from your hometown, mentioning which of our package(s) you are using.
-
-Our address is: Spatie, Samberstraat 69D, 2060 Antwerp, Belgium.
-
-We publish all received postcards [on our company website](https://spatie.be/en/opensource/postcards).
-
-## Credits
-
-- [Thomas Verhelst](https://github.com/TVke)
-- [All Contributors](../../contributors)
-
-## Support us
-
-Spatie is a webdesign agency based in Antwerp, Belgium. You'll find an overview of all our open source projects [on our website](https://spatie.be/opensource).
-
-Does your business depend on our contributions? Reach out and support us on [Patreon](https://www.patreon.com/spatie). 
-All pledges will be dedicated to allocating workforce on maintenance and new awesome stuff.
+- PayPal: [Donate](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=66BYDWAT92N6L)
+- Patreon: [Donate](https://www.patreon.com/nunomaduro)
 
 ## License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+Laravel Zero is an open-source software licensed under the [MIT license](https://github.com/laravel-zero/laravel-zero/blob/stable/LICENSE.md).

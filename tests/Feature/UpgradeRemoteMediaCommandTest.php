@@ -1,17 +1,17 @@
 <?php
 
-namespace Spatie\UpgradeTool\Tests;
+namespace Tests\Feature;
 
-use Illuminate\Http\File;
+use Tests\TestCase;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
-class UpgradeRemoteMediaTest extends TestCase
+class UpgradeRemoteMediaCommandTest extends TestCase
 {
     /** @var @string */
     protected $s3BaseDirectory;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -73,7 +73,7 @@ class UpgradeRemoteMediaTest extends TestCase
     {
         $this->cleanUpS3();
 
-        Storage::putFileAs('test-image', new File('tests/test-directory/test-image.png'), 'test-image.png');
+        Storage::put('test-image.png', file_get_contents('tests/test-directory/test-image.png'));
 
         Storage::makeDirectory('1/conversions');
         Storage::makeDirectory('already-version-7/conversions');

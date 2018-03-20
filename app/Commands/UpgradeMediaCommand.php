@@ -1,23 +1,23 @@
 <?php
 
-namespace Spatie\UpgradeTool\Commands;
+namespace App\Commands;
 
-use Illuminate\Console\Command;
-use Illuminate\Console\ConfirmableTrait;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Console\ConfirmableTrait;
+use LaravelZero\Framework\Commands\Command;
 
 class UpgradeMediaCommand extends Command
 {
     use ConfirmableTrait;
 
     protected $signature = 'upgrade-media 
-    {disk? : Relative path to the location of your media}
+    {disk? : Disk to use}
     {location? : Relative path to the location of your media}
-    {--dry-run : List files that will be renamed without renaming them}
-    {--force : Force the operation to run when in production}';
+    {--d|dry-run : List files that will be renamed without renaming them}
+    {--f|force : Force the operation to run when in production}';
 
-    protected $description = 'Update the names of the outdated files';
+    protected $description = 'Update the names of the version 6 files of spatie/laravel-medialibrary';
 
     /** @var bool */
     protected $isDryRun = false;
@@ -25,12 +25,7 @@ class UpgradeMediaCommand extends Command
     /** @var string */
     protected $disk;
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    public function handle()
+    public function handle(): void
     {
         if (! $this->confirmToProceed()) {
             return;
@@ -53,17 +48,21 @@ class UpgradeMediaCommand extends Command
 
             if (! $this->isDryRun) {
                 Storage::disk($this->disk)->move($file['current'], $file['replacement']);
-            }
 
-            $progressBar->advance();
+                $progressBar->advance();
+            }
         });
 
-        $progressBar->finish();
+        if (! $this->isDryRun) {
+            $progressBar->finish();
+
+            $this->output->newLine();
+        }
 
         $this->info('All done!');
     }
 
-    public function getMediaToBeRenamed($location): Collection
+    protected function getMediaToBeRenamed($location): Collection
     {
         return Collection::make(Storage::disk($this->disk)->allFiles($location))
             ->filter(function ($file) {
