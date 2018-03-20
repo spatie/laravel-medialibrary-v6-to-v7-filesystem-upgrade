@@ -66,24 +66,26 @@ class UpgradeMediaCommand extends Command
     public function getMediaToBeRenamed($location): Collection
     {
         return Collection::make(Storage::disk($this->disk)->allFiles($location))
-            ->map(function ($file) {
-                if ($original = $this->getOriginal($file)) {
-                    $currentPath = pathinfo($file, PATHINFO_DIRNAME);
-                    $currentFile = pathinfo($file, PATHINFO_BASENAME);
-                    $originalName = pathinfo($original, PATHINFO_FILENAME);
-
-                    if (strpos($currentFile, $originalName) === false) {
-                        return [
-                            'current' => $file,
-                            'replacement' => "{$currentPath}/{$originalName}-{$currentFile}",
-                        ];
-                    }
-                }
-
-                return null;
+            ->filter(function ($file) {
+                return $this->getOriginal($file);
             })
             ->filter(function ($file) {
-                return $file;
+                $original = $this->getOriginal($file);
+                $currentFile = pathinfo($file, PATHINFO_BASENAME);
+                $originalName = pathinfo($original, PATHINFO_FILENAME);
+
+                return strpos($currentFile, $originalName) === false;
+            })
+            ->map(function ($file) {
+                $original = $this->getOriginal($file);
+                $currentPath = pathinfo($file, PATHINFO_DIRNAME);
+                $currentFile = pathinfo($file, PATHINFO_BASENAME);
+                $originalName = pathinfo($original, PATHINFO_FILENAME);
+
+                return [
+                    'current' => $file,
+                    'replacement' => "{$currentPath}/{$originalName}-{$currentFile}",
+                ];
             });
     }
 
@@ -95,7 +97,7 @@ class UpgradeMediaCommand extends Command
 
         $path->pop();
 
-        if($path->count() < 1){
+        if ($path->count() < 1) {
             return null;
         }
 
@@ -103,10 +105,10 @@ class UpgradeMediaCommand extends Command
 
         $original = Storage::files($oneLevelHigher);
 
-        if (count($original) > 0) {
-            return $original[0];
+        if (count($original) < 1) {
+            return null;
         }
 
-        return null;
+        return $original[0];
     }
 }
