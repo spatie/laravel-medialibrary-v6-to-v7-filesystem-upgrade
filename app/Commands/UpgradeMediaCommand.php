@@ -92,15 +92,11 @@ class UpgradeMediaCommand extends Command
     {
         $path = pathinfo($filePath, PATHINFO_DIRNAME);
 
-        $path = Collection::make(explode('/', $path));
+        $oneLevelHigher = dirname($path);
 
-        $path->pop();
-
-        if ($path->count() < 1) {
+        if ($oneLevelHigher === '.') {
             return null;
         }
-
-        $oneLevelHigher = $path->implode('/');
 
         $original = Storage::files($oneLevelHigher);
 
