@@ -6,7 +6,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
 
 In version 7 of the [spatie/laravel-medialibrary](https://github.com/spatie/laravel-medialibrary) all conversions created with version 6 needs to be renamed with the original name in front of it.
-When you download the [executable](https://github.com/spatie/) and place it in your laravel projects root you can use the command `php upgrade-tool upgrade-media`.
+When you download the [executable](https://github.com/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade/raw/master/builds/upgrade-tool.phar), rename it to `upgrade-tool` and then place it in your laravel projects root you can use the command `php upgrade-tool upgrade-media`.
 This will rename all conversions made by `spatie/laravel-medialibrary` version 6 to match the new naming convention in version 7.
 
 It will analyse the folder structure and rename where needed.
@@ -40,7 +40,7 @@ media 
 
 ## Installation
 
-You can install the command by downloading the [executable](https://github.com/spatie/) and putting it in you projects root folder.
+You can install the command by downloading the [executable](https://github.com/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade/raw/master/builds/upgrade-tool.phar), renaming it to `upgrade-tool` and putting it in you projects root folder.
 
 ## Usage
 
