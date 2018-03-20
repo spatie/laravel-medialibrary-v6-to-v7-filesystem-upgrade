@@ -58,7 +58,7 @@ If the correct files are listed you can use this command to do the actual conver
 php upgrade-tool upgrade-media
 ```
 
-When you want to use a disk that is not the default in the `medialibrary` config file use:
+When you want to use a disk that is not the `default_filesystem` in the `medialibrary.php` config file use:
 
 ``` bash
 php upgrade-tool upgrade-media s3
