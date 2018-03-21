@@ -33,7 +33,7 @@ media 
 │   └── red-square.png
 └── 2
     ├── conversions
-    │   └── green-square-thumb.png
+    │   └── green-circle-thumb.png
     └── green-circle.png
 ```
 
