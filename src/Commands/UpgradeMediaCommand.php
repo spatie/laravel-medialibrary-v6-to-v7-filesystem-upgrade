@@ -3,9 +3,9 @@
 namespace Spatie\UpgradeTool\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Console\ConfirmableTrait;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Console\ConfirmableTrait;
 
 class UpgradeMediaCommand extends Command
 {

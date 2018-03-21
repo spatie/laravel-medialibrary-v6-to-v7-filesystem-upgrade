@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Storage;
 
 class UpgradeMediaCommandTest extends TestCase
 {
-
     /** @test */
     public function it_can_do_a_dry_run()
     {

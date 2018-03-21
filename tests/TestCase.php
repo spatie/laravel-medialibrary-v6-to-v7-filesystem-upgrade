@@ -3,18 +3,12 @@
 namespace Spatie\UpgradeTool\Tests;
 
 use \Orchestra\Testbench\TestCase as BaseTestCase;
-use Spatie\MediaLibrary\Filesystem\DefaultFilesystem;
 
 class TestCase extends BaseTestCase
 {
-    /** @var \Spatie\MediaLibrary\Filesystem\DefaultFilesystem */
-    protected $filesystem;
-
     public function setUp()
     {
         parent::setUp();
-
-        $this->filesystem = $this->app->make(DefaultFilesystem::class);
     }
 
     protected function getPackageProviders($app)
