@@ -1,4 +1,5 @@
-/vendor
-/.idea
-/.vscode
-/.vagrant
+build
+composer.lock
+docs
+vendor
+coverage

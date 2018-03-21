@@ -6,8 +6,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
 
 In version 7 of the [spatie/laravel-medialibrary](https://github.com/spatie/laravel-medialibrary) all conversions created with version 6 needs to be renamed with the original name in front of it.
-When you download the [executable](https://github.com/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade/raw/master/builds/upgrade-tool.phar), rename it to `upgrade-tool` and then place it in your laravel projects root you can use the command `php upgrade-tool upgrade-media`.
-This will rename all conversions made by `spatie/laravel-medialibrary` version 6 to match the new naming convention in version 7.
+This package adds a command `php artisan upgrade-media` that renames your current media.
 
 It will analyse the folder structure and rename where needed.
 For example from:
@@ -40,7 +39,11 @@ media 
 
 ## Installation
 
-You can install the command by downloading the [executable](https://github.com/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade/raw/master/builds/upgrade-tool.phar), renaming it to `upgrade-tool` and putting it in you projects root folder.
+You can install the package via composer:
+
+```bash
+composer require spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade
+```
 
 ## Usage
 
@@ -49,31 +52,31 @@ The command can handle any custom path and if you already converted some files b
 We recommend to do a dry-run first like this:
 
 ``` bash
-php upgrade-tool upgrade-media --dry-run
+php artisan upgrade-media --dry-run
 ```
 
 If the correct files are listed you can use this command to do the actual conversion:
 
 ``` bash
-php upgrade-tool upgrade-media
+php artisan upgrade-media
 ```
 
 When you want to use a disk that is not the `default_filesystem` in the `medialibrary.php` config file use:
 
 ``` bash
-php upgrade-tool upgrade-media s3
+php artisan upgrade-media s3
 ```
 
 You can have a more fine tuned location on the specified disk by adding a relative path like this:
 
 ``` bash
-php upgrade-tool upgrade-media s3 '/media'
+php artisan upgrade-media s3 '/media'
 ```
 
 To convert your media in production, the `--force` flag comes to the rescue:
 
 ``` bash
-php upgrade-tool upgrade-media --force
+php artisan upgrade-media --force
 ```
 
 ### Testing

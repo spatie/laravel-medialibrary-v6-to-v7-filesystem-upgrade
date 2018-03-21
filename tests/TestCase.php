@@ -1,28 +1,28 @@
 <?php
 
-namespace Tests;
+namespace Spatie\UpgradeTool\Tests;
 
-use PHPUnit\Framework\TestCase as BaseTestCase;
+use \Orchestra\Testbench\TestCase as BaseTestCase;
+use Spatie\MediaLibrary\Filesystem\DefaultFilesystem;
 
-abstract class TestCase extends BaseTestCase
+class TestCase extends BaseTestCase
 {
-    use CreatesApplication;
+    /** @var \Spatie\MediaLibrary\Filesystem\DefaultFilesystem */
+    protected $filesystem;
 
-    /**
-     * Holds an application instance.
-     *
-     * @var \Illuminate\Contracts\Foundation\Application
-     */
-    protected $app;
-
-    /**
-     * Setup the test environment.
-     */
-    protected function setUp(): void
+    public function setUp()
     {
-        $this->app = $this->createApplication();
+        parent::setUp();
 
-        $this->getEnvironmentSetUp($this->app);
+        $this->filesystem = $this->app->make(DefaultFilesystem::class);
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return [
+            \Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
+            \Spatie\UpgradeTool\UpgradeToolServiceProvider::class,
+        ];
     }
 
     protected function getEnvironmentSetUp($app)
