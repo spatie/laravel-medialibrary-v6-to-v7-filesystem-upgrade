@@ -19,7 +19,6 @@ class UpgradeMediaCommand extends Command
 
     protected $description = 'Update the names of the version 6 files of spatie/laravel-medialibrary';
 
-    /** @var bool */
     protected $isDryRun = false;
 
     /** @var string */
@@ -31,9 +30,7 @@ class UpgradeMediaCommand extends Command
             return;
         }
 
-        if (! $this->confirmToProceed("This action changes the name of your existing media!", function () {
-            return true;
-        })) {
+        if (! $this->confirmToProceed('This action changes the name of your existing media!', $this->warnWhenNoForce())) {
             return;
         }
 
@@ -111,5 +108,12 @@ class UpgradeMediaCommand extends Command
         }
 
         return $original[0];
+    }
+
+    protected function warnWhenNoForce()
+    {
+        return function () {
+            return true;
+        };
     }
 }
