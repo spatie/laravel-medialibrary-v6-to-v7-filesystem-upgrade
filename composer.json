@@ -1,6 +1,6 @@
 {
     "name": "spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade",
-    "description": "This tool will add the original name to the comvertions like specified in the upgrade guide of the medialibrary version 7",
+    "description": "This tool will add the original name to the conversions like specified in the upgrade guide of the medialibrary version 7",
     "keywords": [
         "spatie",
         "laravel-medialibrary-v6-to-v7-filesystem-upgrade"

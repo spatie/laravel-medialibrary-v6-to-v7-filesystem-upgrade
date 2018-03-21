@@ -27,6 +27,18 @@ class UpgradeMediaCommandTest extends TestCase
         $this->assertContains('The file `1/conversions/thumb.png` would become `1/conversions/white-cube-thumb.png`', $output);
         $this->assertContains('The file `not-default-path/c/thumb.png` would become `not-default-path/c/white-cube-thumb.png`', $output);
         $this->assertNotContains('The file `already-version-7/conversions/white-cube-thumb.png`', $output);
+
+        $this->assertFileExists('tests/test-directory/extra-level-folder/1/conversions/thumb.png');
+        $this->assertFileNotExists('tests/test-directory/extra-level-folder/1/conversions/white-cube-thumb.png');
+
+        $this->assertFileExists('tests/test-directory/extra-level-folder/already-version-7/conversions/white-cube-thumb.png');
+
+        $this->assertFileExists('tests/test-directory/extra-level-folder/not-default-path/c/thumb.png');
+        $this->assertFileNotExists('tests/test-directory/extra-level-folder/not-default-path/c/white-cube-thumb.png');
+
+        $this->assertContains('The file `extra-level-folder/1/conversions/thumb.png` would become `extra-level-folder/1/conversions/white-cube-thumb.png`', $output);
+        $this->assertContains('The file `extra-level-folder/not-default-path/c/thumb.png` would become `extra-level-folder/not-default-path/c/white-cube-thumb.png`', $output);
+        $this->assertNotContains('The file `extra-level-folder/already-version-7/conversions/white-cube-thumb.png`', $output);
     }
 
     /** @test */
@@ -36,8 +48,11 @@ class UpgradeMediaCommandTest extends TestCase
 
         Artisan::call('upgrade-media', ['disk' => 'local', '--force' => 'default']);
 
-        $this->assertFileExists('tests/test-directory/1/conversions/white-cube-thumb.png');
-        $this->assertFileNotExists('tests/test-directory/1/conversions/thumb.png');
+        $this->assertFileExists('tests/test-directory/extra-level-folder/1/conversions/white-cube-thumb.png');
+        $this->assertFileNotExists('tests/test-directory/extra-level-folder/1/conversions/thumb.png');
+
+        $this->assertFileExists('tests/test-directory/extra-level-folder/1/conversions/white-cube-thumb.png');
+        $this->assertFileNotExists('tests/test-directory/extra-level-folder/1/conversions/thumb.png');
     }
 
     /** @test */
@@ -47,8 +62,11 @@ class UpgradeMediaCommandTest extends TestCase
 
         Artisan::call('upgrade-media', ['disk' => 'local', '--force' => 'default']);
 
-        $this->assertFileExists('tests/test-directory/already-version-7/conversions/white-cube-thumb.png');
-        $this->assertFileNotExists('tests/test-directory/already-version-7/conversions/white-cube-white-cube-thumb.png');
+        $this->assertFileExists('tests/test-directory/extra-level-folder/already-version-7/conversions/white-cube-thumb.png');
+        $this->assertFileNotExists('tests/test-directory/extra-level-folder/already-version-7/conversions/white-cube-white-cube-thumb.png');
+
+        $this->assertFileExists('tests/test-directory/extra-level-folder/already-version-7/conversions/white-cube-thumb.png');
+        $this->assertFileNotExists('tests/test-directory/extra-level-folder/already-version-7/conversions/white-cube-white-cube-thumb.png');
     }
 
     /** @test */
@@ -58,8 +76,11 @@ class UpgradeMediaCommandTest extends TestCase
 
         Artisan::call('upgrade-media', ['disk' => 'local', '--force' => 'default']);
 
-        $this->assertFileExists('tests/test-directory/not-default-path/c/white-cube-thumb.png');
-        $this->assertFileNotExists('tests/test-directory/not-default-path/c/thumb.png');
+        $this->assertFileExists('tests/test-directory/extra-level-folder/not-default-path/c/white-cube-thumb.png');
+        $this->assertFileNotExists('tests/test-directory/extra-level-folder/not-default-path/c/thumb.png');
+
+        $this->assertFileExists('tests/test-directory/extra-level-folder/not-default-path/c/white-cube-thumb.png');
+        $this->assertFileNotExists('tests/test-directory/extra-level-folder/not-default-path/c/thumb.png');
     }
 
     /** @test */
@@ -82,6 +103,10 @@ class UpgradeMediaCommandTest extends TestCase
         Storage::makeDirectory('already-version-7/conversions');
         Storage::makeDirectory('not-default-path/c');
 
+        Storage::makeDirectory('extra-level-folder/1/conversions');
+        Storage::makeDirectory('extra-level-folder/already-version-7/conversions');
+        Storage::makeDirectory('extra-level-folder/not-default-path/c');
+
         Storage::copy('test-image.png', '1/white-cube.png');
         Storage::copy('test-image.png', 'already-version-7/white-cube.png');
         Storage::copy('test-image.png', 'not-default-path/white-cube.png');
@@ -89,5 +114,13 @@ class UpgradeMediaCommandTest extends TestCase
         Storage::copy('test-image.png', '1/conversions/thumb.png');
         Storage::copy('test-image.png', 'already-version-7/conversions/white-cube-thumb.png');
         Storage::copy('test-image.png', 'not-default-path/c/thumb.png');
+
+        Storage::copy('test-image.png', 'extra-level-folder/1/white-cube.png');
+        Storage::copy('test-image.png', 'extra-level-folder/already-version-7/white-cube.png');
+        Storage::copy('test-image.png', 'extra-level-folder/not-default-path/white-cube.png');
+
+        Storage::copy('test-image.png', 'extra-level-folder/1/conversions/thumb.png');
+        Storage::copy('test-image.png', 'extra-level-folder/already-version-7/conversions/white-cube-thumb.png');
+        Storage::copy('test-image.png', 'extra-level-folder/not-default-path/c/thumb.png');
     }
 }

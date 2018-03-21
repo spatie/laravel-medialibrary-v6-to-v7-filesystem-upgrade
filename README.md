@@ -1,4 +1,4 @@
-# Renames media as required to use with spatie/laravel-medialibrary version 7 
+# Renames media as required by spatie/laravel-medialibrary version 7 
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade.svg?style=flat-square)](https://packagist.org/packages/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
 [![Build Status](https://img.shields.io/travis/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade/master.svg?style=flat-square)](https://travis-ci.org/spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
@@ -47,13 +47,19 @@ composer require spatie/laravel-medialibrary-v6-to-v7-filesystem-upgrade
 
 ## Usage
 
-The command can handle any custom path and if you already converted some files by hand it will leave them.
+The command can handle any custom path and if you already converted some files (or added new ones) it will leave them.
 
 We recommend to do a dry-run first like this:
 
 ``` bash
 php artisan upgrade-media --dry-run
 ```
+
+or like this:
+
+``` bash
+   php artisan upgrade-media -d
+   ```
 
 If the correct files are listed you can use this command to do the actual conversion:
 
@@ -73,10 +79,16 @@ You can have a more fine tuned location on the specified disk by adding a relati
 php artisan upgrade-media s3 '/media'
 ```
 
-To convert your media in production, the `--force` flag comes to the rescue:
+To convert your media in production, the `--force` or `-f` option comes to the rescue:
 
 ``` bash
 php artisan upgrade-media --force
+```
+
+or:
+
+``` bash
+php artisan upgrade-media -f
 ```
 
 ### Testing
