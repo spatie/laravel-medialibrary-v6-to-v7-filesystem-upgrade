@@ -17,11 +17,9 @@ class UpgradeMediaCommandTest extends TestCase
         $output = Artisan::output();
 
         $this->assertFileExists('tests/test-directory/1/conversions/thumb.png');
-        $this->assertFileNotExists('tests/test-directory/1/conversions/white-cube-thumb.png');
-
         $this->assertFileExists('tests/test-directory/already-version-7/conversions/white-cube-thumb.png');
-
         $this->assertFileExists('tests/test-directory/not-default-path/c/thumb.png');
+        $this->assertFileNotExists('tests/test-directory/1/conversions/white-cube-thumb.png');
         $this->assertFileNotExists('tests/test-directory/not-default-path/c/white-cube-thumb.png');
 
         $this->assertContains('The file `1/conversions/thumb.png` would become `1/conversions/white-cube-thumb.png`', $output);
@@ -29,16 +27,33 @@ class UpgradeMediaCommandTest extends TestCase
         $this->assertNotContains('The file `already-version-7/conversions/white-cube-thumb.png`', $output);
 
         $this->assertFileExists('tests/test-directory/extra-level-folder/1/conversions/thumb.png');
-        $this->assertFileNotExists('tests/test-directory/extra-level-folder/1/conversions/white-cube-thumb.png');
-
         $this->assertFileExists('tests/test-directory/extra-level-folder/already-version-7/conversions/white-cube-thumb.png');
-
         $this->assertFileExists('tests/test-directory/extra-level-folder/not-default-path/c/thumb.png');
+        $this->assertFileNotExists('tests/test-directory/extra-level-folder/1/conversions/white-cube-thumb.png');
         $this->assertFileNotExists('tests/test-directory/extra-level-folder/not-default-path/c/white-cube-thumb.png');
 
         $this->assertContains('The file `extra-level-folder/1/conversions/thumb.png` would become `extra-level-folder/1/conversions/white-cube-thumb.png`', $output);
         $this->assertContains('The file `extra-level-folder/not-default-path/c/thumb.png` would become `extra-level-folder/not-default-path/c/white-cube-thumb.png`', $output);
         $this->assertNotContains('The file `extra-level-folder/already-version-7/conversions/white-cube-thumb.png`', $output);
+    }
+
+    /** @test */
+    public function it_can_convert_a_specified_path()
+    {
+        $this->resetTestFolderStructure();
+
+        Artisan::call('upgrade-media', ['disk' => 'local', 'location' => '/extra-level-folder', '--force' => 'default']);
+
+        $this->assertFileExists('tests/test-directory/extra-level-folder/1/conversions/white-cube-thumb.png');
+        $this->assertFileExists('tests/test-directory/extra-level-folder/not-default-path/c/white-cube-thumb.png');
+        $this->assertFileExists('tests/test-directory/extra-level-folder/already-version-7/conversions/white-cube-thumb.png');
+        $this->assertFileNotExists('tests/test-directory/extra-level-folder/1/conversions/thumb.png');
+        $this->assertFileNotExists('tests/test-directory/extra-level-folder/not-default-path/c/thumb.png');
+        $this->assertFileNotExists('tests/test-directory/extra-level-folder/already-version-7/conversions/white-cube-white-cube-thumb.png');
+
+        $this->assertFileExists('tests/test-directory/1/conversions/thumb.png');
+        $this->assertFileExists('tests/test-directory/not-default-path/c/thumb.png');
+        $this->assertFileExists('tests/test-directory/already-version-7/conversions/white-cube-thumb.png');
     }
 
     /** @test */
@@ -48,10 +63,9 @@ class UpgradeMediaCommandTest extends TestCase
 
         Artisan::call('upgrade-media', ['disk' => 'local', '--force' => 'default']);
 
+        $this->assertFileExists('tests/test-directory/1/conversions/white-cube-thumb.png');
         $this->assertFileExists('tests/test-directory/extra-level-folder/1/conversions/white-cube-thumb.png');
-        $this->assertFileNotExists('tests/test-directory/extra-level-folder/1/conversions/thumb.png');
-
-        $this->assertFileExists('tests/test-directory/extra-level-folder/1/conversions/white-cube-thumb.png');
+        $this->assertFileNotExists('tests/test-directory/1/conversions/thumb.png');
         $this->assertFileNotExists('tests/test-directory/extra-level-folder/1/conversions/thumb.png');
     }
 
@@ -62,10 +76,9 @@ class UpgradeMediaCommandTest extends TestCase
 
         Artisan::call('upgrade-media', ['disk' => 'local', '--force' => 'default']);
 
+        $this->assertFileExists('tests/test-directory/already-version-7/conversions/white-cube-thumb.png');
         $this->assertFileExists('tests/test-directory/extra-level-folder/already-version-7/conversions/white-cube-thumb.png');
-        $this->assertFileNotExists('tests/test-directory/extra-level-folder/already-version-7/conversions/white-cube-white-cube-thumb.png');
-
-        $this->assertFileExists('tests/test-directory/extra-level-folder/already-version-7/conversions/white-cube-thumb.png');
+        $this->assertFileNotExists('tests/test-directory/already-version-7/conversions/white-cube-white-cube-thumb.png');
         $this->assertFileNotExists('tests/test-directory/extra-level-folder/already-version-7/conversions/white-cube-white-cube-thumb.png');
     }
 
@@ -76,17 +89,16 @@ class UpgradeMediaCommandTest extends TestCase
 
         Artisan::call('upgrade-media', ['disk' => 'local', '--force' => 'default']);
 
+        $this->assertFileExists('tests/test-directory/not-default-path/c/white-cube-thumb.png');
         $this->assertFileExists('tests/test-directory/extra-level-folder/not-default-path/c/white-cube-thumb.png');
-        $this->assertFileNotExists('tests/test-directory/extra-level-folder/not-default-path/c/thumb.png');
-
-        $this->assertFileExists('tests/test-directory/extra-level-folder/not-default-path/c/white-cube-thumb.png');
+        $this->assertFileNotExists('tests/test-directory/not-default-path/c/thumb.png');
         $this->assertFileNotExists('tests/test-directory/extra-level-folder/not-default-path/c/thumb.png');
     }
 
     /** @test */
     public function it_asks_if_you_are_sure_when_no_force()
     {
-        Artisan::call('upgrade-media');
+        Artisan::call('upgrade-media', ['disk' => 'local']);
 
         $output = Artisan::output();
 
