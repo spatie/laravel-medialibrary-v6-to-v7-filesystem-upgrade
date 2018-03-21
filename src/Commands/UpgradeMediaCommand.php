@@ -31,6 +31,12 @@ class UpgradeMediaCommand extends Command
             return;
         }
 
+        if (! $this->confirmToProceed("This action changes the name of your existing media!", function () {
+            return true;
+        })) {
+            return;
+        }
+
         $this->isDryRun = $this->option('dry-run');
 
         $this->disk = $this->argument('disk') ?? config('medialibrary.default_filesystem');

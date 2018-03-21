@@ -12,7 +12,7 @@ class UpgradeMediaCommandTest extends TestCase
     {
         $this->resetTestFolderStructure();
 
-        Artisan::call('upgrade-media', ['disk' => 'local', '--dry-run' => 'default']);
+        Artisan::call('upgrade-media', ['disk' => 'local', '--dry-run' => 'default', '--force' => 'default']);
 
         $output = Artisan::output();
 
@@ -34,7 +34,7 @@ class UpgradeMediaCommandTest extends TestCase
     {
         $this->resetTestFolderStructure();
 
-        Artisan::call('upgrade-media', ['disk' => 'local']);
+        Artisan::call('upgrade-media', ['disk' => 'local', '--force' => 'default']);
 
         $this->assertFileExists('tests/test-directory/1/conversions/white-cube-thumb.png');
         $this->assertFileNotExists('tests/test-directory/1/conversions/thumb.png');
@@ -45,7 +45,7 @@ class UpgradeMediaCommandTest extends TestCase
     {
         $this->resetTestFolderStructure();
 
-        Artisan::call('upgrade-media', ['disk' => 'local']);
+        Artisan::call('upgrade-media', ['disk' => 'local', '--force' => 'default']);
 
         $this->assertFileExists('tests/test-directory/already-version-7/conversions/white-cube-thumb.png');
         $this->assertFileNotExists('tests/test-directory/already-version-7/conversions/white-cube-white-cube-thumb.png');
@@ -56,10 +56,20 @@ class UpgradeMediaCommandTest extends TestCase
     {
         $this->resetTestFolderStructure();
 
-        Artisan::call('upgrade-media', ['disk' => 'local']);
+        Artisan::call('upgrade-media', ['disk' => 'local', '--force' => 'default']);
 
         $this->assertFileExists('tests/test-directory/not-default-path/c/white-cube-thumb.png');
         $this->assertFileNotExists('tests/test-directory/not-default-path/c/thumb.png');
+    }
+
+    /** @test */
+    public function it_asks_if_you_are_sure_when_no_force()
+    {
+        Artisan::call('upgrade-media');
+
+        $output = Artisan::output();
+
+        $this->assertContains('This action changes the name of your existing media!', $output);
     }
 
     protected function resetTestFolderStructure()
