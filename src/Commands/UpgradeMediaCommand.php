@@ -2,6 +2,7 @@
 
 namespace Spatie\UpgradeTool\Commands;
 
+use Closure;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -24,7 +25,7 @@ class UpgradeMediaCommand extends Command
     /** @var string */
     protected $disk;
 
-    public function handle(): void
+    public function handle()
     {
         if (! $this->confirmToProceed()) {
             return;
@@ -44,7 +45,7 @@ class UpgradeMediaCommand extends Command
 
         $progressBar = $this->output->createProgressBar($mediaFilesToChange->count());
 
-        $mediaFilesToChange->each(function ($file) use ($progressBar) {
+        $mediaFilesToChange->each(function (array $file) use ($progressBar) {
             if ($this->isDryRun) {
                 $this->comment("The file `{$file['current']}` would become `{$file['replacement']}`");
             }
@@ -67,18 +68,18 @@ class UpgradeMediaCommand extends Command
 
     protected function getMediaToBeRenamed($location): Collection
     {
-        return Collection::make(Storage::disk($this->disk)->allFiles($location))
-            ->filter(function ($file) {
+        return collect(Storage::disk($this->disk)->allFiles($location))
+            ->filter(function (string $file): ?bool {
                 return $this->getOriginal($file);
             })
-            ->filter(function ($file) {
+            ->filter(function (string $file): bool {
                 $original = $this->getOriginal($file);
                 $currentFile = pathinfo($file, PATHINFO_BASENAME);
                 $originalName = pathinfo($original, PATHINFO_FILENAME);
 
                 return strpos($currentFile, $originalName) === false;
             })
-            ->map(function ($file) {
+            ->map(function (string $file): array {
                 $original = $this->getOriginal($file);
                 $currentPath = pathinfo($file, PATHINFO_DIRNAME);
                 $currentFile = pathinfo($file, PATHINFO_BASENAME);
@@ -103,14 +104,14 @@ class UpgradeMediaCommand extends Command
 
         $original = Storage::files($oneLevelHigher);
 
-        if (count($original) < 1) {
+        if (count($original) !== 1) {
             return null;
         }
 
         return $original[0];
     }
 
-    protected function warnWhenNoForce()
+    protected function warnWhenNoForce(): Closure
     {
         return function () {
             return true;
