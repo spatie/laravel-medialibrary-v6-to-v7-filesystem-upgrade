@@ -58,8 +58,8 @@ php artisan upgrade-media --dry-run
 or like this:
 
 ``` bash
-   php artisan upgrade-media -d
-   ```
+php artisan upgrade-media -d
+```
 
 If the correct files are listed you can use this command to do the actual conversion:
 
