@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\UpgradeTool\Tests;
+namespace Spatie\MedialibraryV7UpgradeTool\Tests;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
@@ -35,8 +35,8 @@ class UpgradeRemoteMediaTest extends TestCase
 
         Artisan::call('upgrade-media', ['disk' => 's3']);
 
-        $this->assertTrue(Storage::disk('s3_disk')->has("{$this->s3BaseDirectory}/1/conversion/white-cube-thumb.png"));
-        $this->assertFalse(Storage::disk('s3_disk')->has("{$this->s3BaseDirectory}/1/conversion/thumb.png"));
+        $this->assertS3DiskHas("{$this->s3BaseDirectory}/1/conversion/white-cube-thumb.png");
+        $this->assertS3DiskHasNot("{$this->s3BaseDirectory}/1/conversion/thumb.png");
     }
 
     /** @test */
@@ -46,8 +46,8 @@ class UpgradeRemoteMediaTest extends TestCase
 
         Artisan::call('upgrade-media', ['disk' => 's3']);
 
-        $this->assertTrue(Storage::disk('s3_disk')->has("{$this->s3BaseDirectory}/already-version-7/conversion/white-cube-thumb.png"));
-        $this->assertFalse(Storage::disk('s3_disk')->has("{$this->s3BaseDirectory}/already-version-7/conversion/white-cube-white-cube-thumb.png"));
+        $this->assertS3DiskHas("{$this->s3BaseDirectory}/already-version-7/conversion/white-cube-thumb.png");
+        $this->assertS3DiskHasNot("{$this->s3BaseDirectory}/already-version-7/conversion/white-cube-white-cube-thumb.png");
     }
 
     /** @test */
@@ -57,8 +57,8 @@ class UpgradeRemoteMediaTest extends TestCase
 
         Artisan::call('upgrade-media', ['disk' => 's3']);
 
-        $this->assertTrue(Storage::disk('s3_disk')->has("{$this->s3BaseDirectory}/not-default-path/c/white-cube-thumb.png"));
-        $this->assertFalse(Storage::disk('s3_disk')->has("{$this->s3BaseDirectory}/not-default-path/c/thumb.png"));
+        $this->assertS3DiskHas("{$this->s3BaseDirectory}/not-default-path/c/white-cube-thumb.png");
+        $this->assertS3DiskHasNot("{$this->s3BaseDirectory}/not-default-path/c/thumb.png");
     }
 
     protected function cleanUpS3()
@@ -87,7 +87,7 @@ class UpgradeRemoteMediaTest extends TestCase
         Storage::copy('test-image.png', 'not-default-path/c/thumb.png');
     }
 
-    public function canTestS3()
+    public function canTestS3(): bool
     {
         return ! empty(getenv('S3_ACCESS_KEY_ID'));
     }
@@ -95,5 +95,15 @@ class UpgradeRemoteMediaTest extends TestCase
     public static function getS3BaseTestDirectory(): string
     {
         return md5(getenv('TRAVIS_BUILD_ID') . app()->version() . phpversion());
+    }
+
+    protected function assertS3DiskHas($pathToFile)
+    {
+        $this->assertTrue(Storage::disk('s3_disk')->has($pathToFile));
+    }
+
+    protected function assertS3DiskHasNot($pathToFile)
+    {
+        $this->assertFalse(Storage::disk('s3_disk')->has($pathToFile));
     }
 }

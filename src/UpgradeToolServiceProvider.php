@@ -1,9 +1,9 @@
 <?php
 
-namespace Spatie\UpgradeTool;
+namespace Spatie\MedialibraryV7UpgradeTool;
 
 use Illuminate\Support\ServiceProvider;
-use Spatie\UpgradeTool\Commands\UpgradeMediaCommand;
+use Spatie\MedialibraryV7UpgradeTool\Commands\UpgradeMediaCommand;
 
 class UpgradeToolServiceProvider extends ServiceProvider
 {

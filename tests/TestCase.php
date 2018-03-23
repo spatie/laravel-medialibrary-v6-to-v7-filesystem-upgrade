@@ -1,6 +1,6 @@
 <?php
 
-namespace Spatie\UpgradeTool\Tests;
+namespace Spatie\MedialibraryV7UpgradeTool\Tests;
 
 use \Orchestra\Testbench\TestCase as BaseTestCase;
 
@@ -15,7 +15,7 @@ class TestCase extends BaseTestCase
     {
         return [
             \Spatie\MediaLibrary\MediaLibraryServiceProvider::class,
-            \Spatie\UpgradeTool\UpgradeToolServiceProvider::class,
+            \Spatie\MedialibraryV7UpgradeTool\UpgradeToolServiceProvider::class,
         ];
     }
 

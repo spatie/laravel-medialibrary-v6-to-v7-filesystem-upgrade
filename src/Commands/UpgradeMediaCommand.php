@@ -1,10 +1,8 @@
 <?php
 
-namespace Spatie\UpgradeTool\Commands;
+namespace Spatie\MedialibraryV7UpgradeTool\Commands;
 
-use Closure;
 use Illuminate\Console\Command;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Console\ConfirmableTrait;
 
@@ -14,16 +12,19 @@ class UpgradeMediaCommand extends Command
 
     protected $signature = 'upgrade-media 
     {disk? : Disk to use}
-    {location? : Relative path to the location of your media}
     {--d|dry-run : List files that will be renamed without renaming them}
     {--f|force : Force the operation to run when in production}';
 
     protected $description = 'Update the names of the version 6 files of spatie/laravel-medialibrary';
 
-    protected $isDryRun = false;
-
     /** @var string */
     protected $disk;
+
+    /** @var string */
+    protected $isDryRun;
+
+    /** @var \Illuminate\Support\Collection */
+    protected $mediaFilesToChange;
 
     public function handle()
     {
@@ -31,90 +32,109 @@ class UpgradeMediaCommand extends Command
             return;
         }
 
-        if (! $this->confirmToProceed('This action changes the name of your existing media!', $this->warnWhenNoForce())) {
-            return;
-        }
-
-        $this->isDryRun = $this->option('dry-run');
+        $this->isDryRun = $this->option('dry-run') ?? false;
 
         $this->disk = $this->argument('disk') ?? config('medialibrary.default_filesystem');
 
-        $location = $this->argument('location') ?? '/';
-
-        $mediaFilesToChange = $this->getMediaToBeRenamed($location);
-
-        $progressBar = $this->output->createProgressBar($mediaFilesToChange->count());
-
-        $mediaFilesToChange->each(function (array $file) use ($progressBar) {
-            if ($this->isDryRun) {
-                $this->comment("The file `{$file['current']}` would become `{$file['replacement']}`");
-            }
-
-            if (! $this->isDryRun) {
-                Storage::disk($this->disk)->move($file['current'], $file['replacement']);
-
-                $progressBar->advance();
-            }
-        });
-
-        if (! $this->isDryRun) {
-            $progressBar->finish();
-
-            $this->output->newLine();
-        }
+        $this
+            ->getMediaFilesToBeRenamed()
+            ->renameMediaFiles();
 
         $this->info('All done!');
     }
 
-    protected function getMediaToBeRenamed($location): Collection
+    protected function getMediaFilesToBeRenamed(): self
     {
-        return collect(Storage::disk($this->disk)->allFiles($location))
-            ->filter(function (string $file): ?bool {
-                return $this->getOriginal($file);
+        $this->mediaFilesToChange = collect(Storage::disk($this->disk)->allFiles())
+            ->filter(function (string $file): bool {
+                return $this->hasOriginal($file);
             })
             ->filter(function (string $file): bool {
-                $original = $this->getOriginal($file);
-                $currentFile = pathinfo($file, PATHINFO_BASENAME);
-                $originalName = pathinfo($original, PATHINFO_FILENAME);
-
-                return strpos($currentFile, $originalName) === false;
+                return $this->needsToBeConverted($file);
             })
             ->map(function (string $file): array {
-                $original = $this->getOriginal($file);
-                $currentPath = pathinfo($file, PATHINFO_DIRNAME);
-                $currentFile = pathinfo($file, PATHINFO_BASENAME);
-                $originalName = pathinfo($original, PATHINFO_FILENAME);
-
-                return [
-                    'current' => $file,
-                    'replacement' => "{$currentPath}/{$originalName}-{$currentFile}",
-                ];
+                return $this->getReplaceArray($file);
             });
+
+        return $this;
     }
 
-    protected function getOriginal(string $filePath): ?string
+    protected function hasOriginal(string $filePath): bool
     {
         $path = pathinfo($filePath, PATHINFO_DIRNAME);
 
         $oneLevelHigher = dirname($path);
 
         if ($oneLevelHigher === '.') {
-            return null;
+            return false;
         }
 
-        $original = Storage::files($oneLevelHigher);
+        $original = Storage::disk($this->disk)->files($oneLevelHigher);
 
         if (count($original) !== 1) {
-            return null;
+            return false;
         }
+
+        return true;
+    }
+
+    protected function getOriginal(string $filePath): string
+    {
+        $path = pathinfo($filePath, PATHINFO_DIRNAME);
+
+        $oneLevelHigher = dirname($path);
+
+        $original = Storage::disk($this->disk)->files($oneLevelHigher);
 
         return $original[0];
     }
 
-    protected function warnWhenNoForce(): Closure
+    protected function needsToBeConverted(string $file): bool
     {
-        return function () {
-            return true;
-        };
+        $currentFile = pathinfo($file, PATHINFO_BASENAME);
+
+        $original = $this->getOriginal($file);
+
+        $originalName = pathinfo($original, PATHINFO_FILENAME);
+
+        return strpos($currentFile, $originalName) === false;
+    }
+
+    protected function getReplaceArray(string $file): array
+    {
+        $currentFilePath = pathinfo($file);
+
+        $original = $this->getOriginal($file);
+
+        $originalFilePath = pathinfo($original);
+
+        return [
+            'current' => $file,
+            'replacement' => "{$currentFilePath['dirname']}/{$originalFilePath['filename']}-{$currentFilePath['basename']}",
+        ];
+
+    }
+
+    protected function renameMediaFiles()
+    {
+        $progressBar = $this->output->createProgressBar($this->mediaFilesToChange->count());
+
+        $this->mediaFilesToChange->each(function (array $filePaths) use ($progressBar) {
+            if ($this->isDryRun) {
+                $this->info('This is a dry-run and will not actually rename the files');
+            }
+
+            if (! $this->isDryRun){
+                Storage::disk($this->disk)->move($filePaths['current'], $filePaths['replacement']);
+            }
+
+            $this->comment("The file `{$filePaths['current']}` has become `{$filePaths['replacement']}`");
+
+            $progressBar->advance();
+        });
+
+        $progressBar->finish();
+
+        $this->output->newLine();
     }
 }

@@ -27,12 +27,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Spatie\\UpgradeTool\\" : "src"
+            "Spatie\\MedialibraryV7UpgradeTool\\" : "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Spatie\\UpgradeTool\\Tests\\" : "tests"
+            "Spatie\\MedialibraryV7UpgradeTool\\Tests\\" : "tests"
         }
     },
     "scripts": {
@@ -46,7 +46,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Spatie\\UpgradeTool\\UpgradeToolServiceProvider"
+                "Spatie\\MedialibraryV7UpgradeTool\\UpgradeToolServiceProvider"
             ]
         }
     }
