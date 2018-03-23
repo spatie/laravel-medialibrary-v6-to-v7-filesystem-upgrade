@@ -65,11 +65,11 @@ class UpgradeMediaCommand extends Command
             $this->info('There are no files to convert.');
         }
 
-        $this->mediaFilesToChange->each(function (array $filePaths) {
-            if ($this->isDryRun) {
-                $this->info('This is a dry-run and will not actually rename the files');
-            }
+        if ($this->isDryRun) {
+            $this->info('This is a dry-run and will not actually rename the files');
+        }
 
+        $this->mediaFilesToChange->each(function (array $filePaths) {
             if (! $this->isDryRun) {
                 Storage::disk($this->disk)->move($filePaths['current'], $filePaths['replacement']);
             }
