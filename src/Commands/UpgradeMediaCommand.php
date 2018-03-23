@@ -59,6 +59,25 @@ class UpgradeMediaCommand extends Command
         return $this;
     }
 
+    protected function renameMediaFiles()
+    {
+        if ($this->mediaFilesToChange->count() === 0){
+            $this->info('There are no files to convert.');
+        }
+
+        $this->mediaFilesToChange->each(function (array $filePaths) {
+            if ($this->isDryRun) {
+                $this->info('This is a dry-run and will not actually rename the files');
+            }
+
+            if (! $this->isDryRun) {
+                Storage::disk($this->disk)->move($filePaths['current'], $filePaths['replacement']);
+            }
+
+            $this->comment("The file `{$filePaths['current']}` has become `{$filePaths['replacement']}`");
+        });
+    }
+
     protected function hasOriginal(string $filePath): bool
     {
         $path = pathinfo($filePath, PATHINFO_DIRNAME);
@@ -78,63 +97,36 @@ class UpgradeMediaCommand extends Command
         return true;
     }
 
-    protected function getOriginal(string $filePath): string
-    {
-        $path = pathinfo($filePath, PATHINFO_DIRNAME);
-
-        $oneLevelHigher = dirname($path);
-
-        $original = Storage::disk($this->disk)->files($oneLevelHigher);
-
-        return $original[0];
-    }
-
     protected function needsToBeConverted(string $file): bool
     {
-        $currentFile = pathinfo($file, PATHINFO_BASENAME);
+        $currentFile = pathinfo($file);
 
-        $original = $this->getOriginal($file);
+        $original = $this->getOriginal($currentFile['dirname']);
 
-        $originalName = pathinfo($original, PATHINFO_FILENAME);
-
-        return strpos($currentFile, $originalName) === false;
+        return strpos($currentFile['basename'], $original) === false;
     }
 
     protected function getReplaceArray(string $file): array
     {
-        $currentFilePath = pathinfo($file);
+        $currentFile = pathinfo($file);
 
-        $original = $this->getOriginal($file);
+        $currentFilePath = $currentFile['dirname'];
 
-        $originalFilePath = pathinfo($original);
+        $original = $this->getOriginal($currentFilePath);
 
         return [
             'current' => $file,
-            'replacement' => "{$currentFilePath['dirname']}/{$originalFilePath['filename']}-{$currentFilePath['basename']}",
+            'replacement' => "{$currentFilePath}/{$original}-{$currentFile['basename']}",
         ];
 
     }
 
-    protected function renameMediaFiles()
+    protected function getOriginal(string $filePath): string
     {
-        $progressBar = $this->output->createProgressBar($this->mediaFilesToChange->count());
+        $oneLevelHigher = dirname($filePath);
 
-        $this->mediaFilesToChange->each(function (array $filePaths) use ($progressBar) {
-            if ($this->isDryRun) {
-                $this->info('This is a dry-run and will not actually rename the files');
-            }
+        $original = Storage::disk($this->disk)->files($oneLevelHigher);
 
-            if (! $this->isDryRun){
-                Storage::disk($this->disk)->move($filePaths['current'], $filePaths['replacement']);
-            }
-
-            $this->comment("The file `{$filePaths['current']}` has become `{$filePaths['replacement']}`");
-
-            $progressBar->advance();
-        });
-
-        $progressBar->finish();
-
-        $this->output->newLine();
+        return pathinfo($original[0], PATHINFO_FILENAME);
     }
 }
