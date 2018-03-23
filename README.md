@@ -73,12 +73,6 @@ When you want to use a disk that is not the `default_filesystem` in the `mediali
 php artisan upgrade-media s3
 ```
 
-You can have a more fine tuned location on the specified disk by adding a relative path like this:
-
-``` bash
-php artisan upgrade-media s3 '/media'
-```
-
 To convert your media in production, the `--force` or `-f` option comes to the rescue:
 
 ``` bash
