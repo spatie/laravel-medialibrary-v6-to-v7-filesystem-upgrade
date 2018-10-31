@@ -3,8 +3,8 @@
 namespace Spatie\MedialibraryV7UpgradeTool\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Console\ConfirmableTrait;
+use Illuminate\Support\Facades\Storage;
 
 class UpgradeMediaCommand extends Command
 {
@@ -12,7 +12,7 @@ class UpgradeMediaCommand extends Command
 
     protected $signature = 'upgrade-media 
     {disk? : Disk to use}
-    {--d|dry-run : List files that will be renamed without renaming them}
+        {--d|dry-run : List files that will be renamed without renaming them}
     {--f|force : Force the operation to run when in production}';
 
     protected $description = 'Update the names of the version 6 files of spatie/laravel-medialibrary';
@@ -34,18 +34,15 @@ class UpgradeMediaCommand extends Command
 
         $this->isDryRun = $this->option('dry-run') ?? false;
 
-        $this->disk = $this->argument('disk') ?? config('medialibrary.default_filesystem');
-
-        $this
-            ->getMediaFilesToBeRenamed()
-            ->renameMediaFiles();
+        $this->disk  = $this->argument('disk') ?? config('medialibrary.disk_name');
+        $this->explore('./');
 
         $this->info('All done!');
     }
 
-    protected function getMediaFilesToBeRenamed(): self
+    protected function getMediaFilesToBeRenamed(array $files): self
     {
-        $this->mediaFilesToChange = collect(Storage::disk($this->disk)->allFiles())
+        $this->mediaFilesToChange = collect($files)
             ->filter(function (string $file): bool {
                 return $this->hasOriginal($file);
             })
@@ -61,7 +58,7 @@ class UpgradeMediaCommand extends Command
 
     protected function renameMediaFiles()
     {
-        if ($this->mediaFilesToChange->count() === 0){
+        if ($this->mediaFilesToChange->count() === 0) {
             $this->info('There are no files to convert.');
         }
 
@@ -70,7 +67,7 @@ class UpgradeMediaCommand extends Command
         }
 
         $this->mediaFilesToChange->each(function (array $filePaths) {
-            if (! $this->isDryRun) {
+            if (!$this->isDryRun) {
                 Storage::disk($this->disk)->move($filePaths['current'], $filePaths['replacement']);
             }
 
@@ -129,4 +126,17 @@ class UpgradeMediaCommand extends Command
 
         return pathinfo($original[0], PATHINFO_FILENAME);
     }
+
+    protected function explore($directory)
+    {
+        $files = Storage::disk($this->disk)->files($directory);
+        $this
+            ->getMediaFilesToBeRenamed($files)
+            ->renameMediaFiles();
+        $directories = Storage::disk($this->disk)->directories($directory);
+        foreach($directories as $directory) {
+            $this->explore($directory);
+        }
+    }
+
 }
