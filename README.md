@@ -39,7 +39,7 @@ media 
 
 ## Support us
 
-[![Image](https://github-ads.s3.eu-central-1.amazonaws.com/laravel-medialibrary-v6-to-v7-filesystem-upgrade.jpg)](https://spatie.be/github-ad-click/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
+[<img src="https://github-ads.s3.eu-central-1.amazonaws.com/laravel-medialibrary-v6-to-v7-filesystem-upgrade.jpg?t=1" width="419px" />](https://spatie.be/github-ad-click/laravel-medialibrary-v6-to-v7-filesystem-upgrade)
 
 We invest a lot of resources into creating [best in class open source packages](https://spatie.be/open-source). You can support us by [buying one of our paid products](https://spatie.be/open-source/support-us).
 
